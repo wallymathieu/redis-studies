@@ -16,18 +16,21 @@ namespace SomeBasicFileStoreApp.Tests.Redis
         [SetUp]
         public void SetUp()
         {
-            redis = ConnectionMultiplexer.Connect("127.0.0.1:6379");
+            redis = ConnectionMultiplexer.Connect("localhost,resolvedns=1");
         }
 
 		private List<int> dbs = new List<int>();
 		[TearDown]
 		public void TearDown()
 		{
-			foreach (var db in dbs)
-			{
-                redis.GetServer("127.0.0.1:6379").FlushDatabase(db);
-			}
-            redis.Close();
+            if (redis != null)
+            {
+                foreach (var db in dbs)
+                {
+                    redis.GetServer("localhost,resolvedns=1").FlushDatabase(db);
+                }
+                redis.Close();
+            }
 		}
 
 		[Test]
