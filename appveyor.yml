@@ -1,7 +1,7 @@
 version: 1.0.{build}
 configuration: Release
 before_build:
-  - nuget install redis-64 -excludeversion
+  - nuget install redis-64 -excludeversion -source http://www.nuget.org/api/v2/
   - redis-64\redis-server.exe --service-install
   - redis-64\redis-server.exe --service-start
   - nuget restore redis-studies.sln
