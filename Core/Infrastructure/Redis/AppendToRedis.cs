@@ -44,7 +44,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             getName = getCommand.ToDictionary(kv => kv.Value, kv => kv.Key);
         }
 
-        protected Guid HashCreate(Command command, IBatch batch)
+        protected static Guid HashCreate(Command command, IBatch batch)
         {
             var id = Guid.NewGuid();
             batch.SetAddAsync("Commands", id.ToString());
