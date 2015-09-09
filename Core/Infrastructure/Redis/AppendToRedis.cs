@@ -23,7 +23,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
                     .Case((AddOrderCommand c)=> Persist(c,batch))
                     .Case((AddProductCommand c)=> Persist(c,batch))
                     .Case((AddProductToOrder c)=> Persist(c,batch))
-                    .Else(c=>{throw new Exception("Unknown command type "+c.GetType().Name);})
+                    .ElseFail()
                     ;
             }
             batch.Execute();
@@ -68,9 +68,8 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
                 .Case((AddOrderCommand c)=>Restore(c,db,key))
                 .Case((AddProductCommand c)=>Restore(c,db,key))
                 .Case((AddProductToOrder c)=>Restore(c,db,key))
-                .Else(c=>{throw new Exception("Unknown command type "+c.GetType().Name);})
+                .ElseFail()
                 ;
-//            instance.Restore(db, key);
             return instance;
         }
 
