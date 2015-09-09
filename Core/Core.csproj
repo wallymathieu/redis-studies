@@ -43,9 +43,8 @@
     <Reference Include="StackExchange.Redis">
       <HintPath>..\StackExchange.Redis\StackExchange.Redis\bin\Debug\StackExchange.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="With, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="With, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\With.0.4.19\lib\net40\With.dll</HintPath>
-      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +65,7 @@
     <Compile Include="Infrastructure\IAppendBatch.cs" />
     <Compile Include="Commands\PersistCommandsHandler.cs" />
     <Compile Include="Infrastructure\Redis\AppendToRedis.cs" />
+    <Compile Include="Infrastructure\Redis\RedisExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

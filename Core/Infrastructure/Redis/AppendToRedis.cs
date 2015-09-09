@@ -7,7 +7,7 @@ using System;
 
 namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
 {
-	public class AppendToRedis
+    public class AppendToRedis
 	{
         private readonly IDatabase db;
         public AppendToRedis(IDatabase db)
@@ -86,14 +86,21 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             return id;
         }
 
-        public static void Restore(AddCustomerCommand c, IDatabase batch, Guid key)
+        static HashEntry[] GetHash(IDatabase db, Guid key)
         {
-            c.Id = Int32.Parse(batch.HashGet(key.ToString(), "Id").ToString());
-            c.Version = Int32.Parse(batch.HashGet(key.ToString(), "Version").ToString());
-            c.Firstname = batch.HashGet(key.ToString(), "Firstname").ToString();
-            c.Lastname = batch.HashGet(key.ToString(), "Lastname").ToString();
+            return db.HashGetAll(key.ToString());
         }
-
+       
+        public static void Restore(AddCustomerCommand c, IDatabase db, Guid key)
+        {
+            GetHash(db, key).Tap(hash =>
+                {
+                    c.Id = hash.Int("Id");
+                    c.Version = hash.Int("Version");
+                    c.Firstname = hash.String("Firstname");
+                    c.Lastname = hash.String("Lastname");
+                });
+        }
 
         public static Guid Persist(AddOrderCommand c, IBatch batch)
         {
@@ -107,12 +114,15 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
                 });
             return id;
         }
-        public static void Restore(AddOrderCommand c,IDatabase batch, Guid key)
+        public static void Restore(AddOrderCommand c,IDatabase db, Guid key)
         {
-            c.Id = Int32.Parse(batch.HashGet(key.ToString(), "Id").ToString());
-            c.Version = Int32.Parse(batch.HashGet(key.ToString(), "Version").ToString());
-            c.Customer = Int32.Parse(batch.HashGet(key.ToString(), "Customer").ToString());
-            c.OrderDate = new DateTime(long.Parse( batch.HashGet(key.ToString(), "OrderDate").ToString()));
+            GetHash(db, key).Tap(hash =>
+                {
+                    c.Id = hash.Int("Id");
+                    c.Version = hash.Int("Version");
+                    c.Customer = hash.Int("Customer");
+                    c.OrderDate = new DateTime(hash.Long("OrderDate"));
+                });
         }
 
         public static Guid Persist(AddProductCommand c,IBatch batch)
@@ -127,14 +137,16 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
                 });
             return id;
         }
-        public static void Restore(AddProductCommand c,IDatabase batch, Guid key)
+        public static void Restore(AddProductCommand c,IDatabase db, Guid key)
         {
-            c.Id = Int32.Parse(batch.HashGet(key.ToString(), "Id").ToString());
-            c.Version = Int32.Parse(batch.HashGet(key.ToString(), "Version").ToString());
-            c.Cost = float.Parse(batch.HashGet(key.ToString(), "Cost").ToString());
-            c.Name = batch.HashGet(key.ToString(), "Name").ToString();
+            GetHash(db, key).Tap(hash =>
+                {
+                    c.Id = hash.Int("Id");
+                    c.Version = hash.Int("Version");
+                    c.Cost = hash.Float("Cost");
+                    c.Name = hash.String("Name");
+                });
         }
-
 
         public static Guid Persist(AddProductToOrder c, IBatch batch)
         {
@@ -146,10 +158,13 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
                 });
             return id;
         }
-        public static void Restore(AddProductToOrder c, IDatabase batch, Guid key)
+        public static void Restore(AddProductToOrder c, IDatabase db, Guid key)
         {
-            c.OrderId = Int32.Parse(batch.HashGet(key.ToString(), "OrderId").ToString());
-            c.ProductId = Int32.Parse(batch.HashGet(key.ToString(), "ProductId").ToString());
+            GetHash(db, key).Tap(hash =>
+                {
+                    c.OrderId = hash.Int("OrderId");
+                    c.ProductId = hash.Int("ProductId");
+                });
         }
         public static IEnumerable<Command> ReadAll(IDatabase db)
         {
