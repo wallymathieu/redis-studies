@@ -44,7 +44,7 @@
       <HintPath>..\packages\With.0.4.18\lib\net40\With.dll</HintPath>
     </Reference>
     <Reference Include="StackExchange.Redis">
-      <HintPath>..\packages\StackExchange.Redis.1.0.481\lib\net45\StackExchange.Redis.dll</HintPath>
+      <HintPath>..\StackExchange.Redis\StackExchange.Redis\bin\Debug\StackExchange.Redis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
