@@ -20,15 +20,6 @@ namespace SomeBasicFileStoreApp.Core.Commands
                 o.Products.Add(product)));
         }
 
-        public override Guid Persist(IBatch batch)
-        {
-            var id = this.HashCreate(batch);
-            batch.HashSetAsync(id.ToString(), new []
-                {
-                    new HashEntry("OrderId", OrderId),
-                    new HashEntry("ProductId", ProductId),
-                });
-            return id;
-        }
+
 	}
 }
