@@ -122,7 +122,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
                 {
                     new HashEntry("Id", c.Id),
                     new HashEntry("Version", c.Version),
-                    new HashEntry("Cost", c.Cost),
+                    new HashEntry("Cost", c.Cost.ToString()),
                     new HashEntry("Name", c.Name),
                 });
             return id;
