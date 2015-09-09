@@ -66,6 +66,10 @@
     <Compile Include="Commands\PersistCommandsHandler.cs" />
     <Compile Include="Infrastructure\Redis\AppendToRedis.cs" />
     <Compile Include="Infrastructure\Redis\RedisExtensions.cs" />
+    <Compile Include="Infrastructure\Redis\Maps\AddCustomerCommandMap.cs" />
+    <Compile Include="Infrastructure\Redis\Maps\AddOrderCommandMap.cs" />
+    <Compile Include="Infrastructure\Redis\Maps\AddProductCommandMap.cs" />
+    <Compile Include="Infrastructure\Redis\Maps\AddProductToOrderMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -79,4 +83,7 @@
   </Target>
   -->
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Infrastructure\Redis\Maps\" />
+  </ItemGroup>
 </Project>
