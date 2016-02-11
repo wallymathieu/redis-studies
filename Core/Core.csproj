@@ -63,7 +63,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Domain\Repository.cs" />
     <Compile Include="Commands\RepositoryCommandHandler.cs" />
-    <Compile Include="Commands\CommandHandlerExtensions.cs" />
     <Compile Include="Infrastructure\IAppendBatch.cs" />
     <Compile Include="Commands\PersistCommandsHandler.cs" />
     <Compile Include="Infrastructure\Redis\AppendToRedis.cs" />

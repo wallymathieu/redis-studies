@@ -5,20 +5,20 @@ using SomeBasicFileStoreApp.Core.Commands;
 
 namespace SomeBasicFileStoreApp.Tests
 {
-    internal class ObjectContainer:IDisposable
-	{
-		private ICommandHandler[] handlers;
+    internal class ObjectContainer : IDisposable
+    {
+        private CommandHandler[] handlers;
         private PersistCommandsHandler _persistToFile;
-		private readonly IRepository _repository = new Repository();
+        private readonly IRepository _repository = new Repository();
         private readonly FakeAppendToFile _fakeAppendToFile;
-		
+
         public ObjectContainer()
-		{
+        {
             _fakeAppendToFile = new FakeAppendToFile();
             _persistToFile = new PersistCommandsHandler(_fakeAppendToFile);
-			handlers =  new ICommandHandler[] {
-                new RepositoryCommandHandler(_repository),
-                _persistToFile
+            handlers = new CommandHandler[] {
+                new RepositoryCommandHandler(_repository).Handle,
+                _persistToFile.Handle
             };
         }
 
@@ -27,15 +27,10 @@ namespace SomeBasicFileStoreApp.Tests
             _persistToFile.Start();
         }
 
-		public IRepository GetRepository()
-		{
-			return _repository;
-		}
-
-		public IEnumerable<ICommandHandler> GetAllHandlers()
-		{
-			return handlers;
-		}
+        public IRepository GetRepository()
+        {
+            return _repository;
+        }
 
         public void Dispose()
         {
@@ -46,5 +41,16 @@ namespace SomeBasicFileStoreApp.Tests
         {
             return _fakeAppendToFile.Batches();
         }
-	}
+
+        public void HandleAll(IEnumerable<Command> commands)
+        {
+            foreach (var command in commands)
+            {
+                foreach (var handler in handlers)
+                {
+                    handler.Invoke(command);
+                }
+            }
+        }
+    }
 }

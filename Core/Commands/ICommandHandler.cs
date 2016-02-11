@@ -1,15 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using SomeBasicFileStoreApp.Core.Commands;
 
 namespace SomeBasicFileStoreApp.Core
 {
-	public interface ICommandHandler<T> : ICommandHandler
-	{
-		void Handle(T command);
-	}
-	public interface ICommandHandler
-	{
-	}
-
+    public delegate void CommandHandler(Command command);
 }

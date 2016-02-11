@@ -1,6 +1,4 @@
-﻿using StackExchange.Redis;
-using System;
-namespace SomeBasicFileStoreApp.Core.Commands
+﻿namespace SomeBasicFileStoreApp.Core.Commands
 {
     public class AddProductCommand : Command
     {

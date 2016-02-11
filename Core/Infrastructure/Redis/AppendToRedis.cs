@@ -8,7 +8,7 @@ using System;
 namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
 {
     public class AppendToRedis
-	{
+    {
         private readonly IDatabase db;
         public AppendToRedis(IDatabase db)
         {
@@ -22,7 +22,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             {
                 ids.Add(command.HashCreate(batch));
             }
-            batch.SetAddAsync("Commands", ids.Select(id=>(RedisValue)id.ToString()).ToArray());
+            batch.SetAddAsync("Commands", ids.Select(id => (RedisValue)id.ToString()).ToArray());
             batch.Execute();
         }
 
@@ -36,13 +36,13 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             var entries = db.HashGetAll(key);
             var type = entries.GetString("Type");
             var command = RedisExtensions.getCommand[type];
-            var instance =(Command) Activator.CreateInstance(command);
+            var instance = (Command)Activator.CreateInstance(command);
             instance.SequenceNumber = entries.GetInt("SequenceNumber");
             Switch.On(instance)
-                .Case((AddCustomerCommand c) => AddCustomerCommandMap.Restore(c,db,key))
-                .Case((AddOrderCommand c)=> AddOrderCommandMap.Restore(c,db,key))
-                .Case((AddProductCommand c)=>AddProductCommandMap.Restore(c,db,key))
-                .Case((AddProductToOrder c)=>AddProductToOrderMap.Restore(c,db,key))
+                .Case((AddCustomerCommand c) => AddCustomerCommandMap.Restore(c, db, key))
+                .Case((AddOrderCommand c) => AddOrderCommandMap.Restore(c, db, key))
+                .Case((AddProductCommand c) => AddProductCommandMap.Restore(c, db, key))
+                .Case((AddProductToOrder c) => AddProductToOrderMap.Restore(c, db, key))
                 .ElseFail()
                 ;
             return instance;
@@ -56,6 +56,6 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
                 yield return Read(db, Guid.Parse(item));
             }
         }
-	}
+    }
 
 }

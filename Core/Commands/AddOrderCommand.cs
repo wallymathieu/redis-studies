@@ -1,5 +1,4 @@
 ﻿using System;
-using StackExchange.Redis;
 namespace SomeBasicFileStoreApp.Core.Commands
 {
     public class AddOrderCommand : Command
@@ -14,7 +13,5 @@ namespace SomeBasicFileStoreApp.Core.Commands
             var command = this;
             _repository.Save(new Order(command.Id, command.Customer, command.OrderDate, new Product[0], command.Version));
         }
-
-
     }
 }
