@@ -18,7 +18,7 @@ namespace SomeBasicFileStoreApp.Tests.Redis
         [SetUp]
         public void SetUp()
         {
-            redis = ConnectionMultiplexer.Connect("localhost,resolvedns=1,allowadmin=1");
+            redis = ConnectionMultiplexer.Connect("localhost,resolvedns=1,allowadmin=1,connectTimeout=10000");
             endpoint = redis.GetEndPoints().First();
         }
 
