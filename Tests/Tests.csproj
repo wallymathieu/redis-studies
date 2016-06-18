@@ -40,11 +40,11 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="StackExchange.Redis">
-      <HintPath>..\StackExchange.Redis\StackExchange.Redis\bin\Debug\StackExchange.Redis.dll</HintPath>
-    </Reference>
     <Reference Include="With">
       <HintPath>..\packages\With.2.0.0\lib\net40\With.dll</HintPath>
+    </Reference>
+    <Reference Include="StackExchange.Redis">
+      <HintPath>..\StackExchange.Redis\StackExchange.Redis_Net40\bin\Debug\StackExchange.Redis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
