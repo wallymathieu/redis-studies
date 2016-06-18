@@ -26,8 +26,10 @@ build :restore_redis do |msb, args|
   msb.sln = File.join(dir, "StackExchange.Redis", "StackExchange.Redis","StackExchange.Redis.csproj")
 end
 
+task :test=> [:build, :test_only]
+
 desc "test using console"
-test_runner :test => [:build] do |runner|
+test_runner :test_only do |runner|
   runner.exe = NugetHelper::nunit_path
   files = Dir.glob(File.join(dir, "**", "bin", "Debug", "Tests.dll"))
   runner.files = files 
