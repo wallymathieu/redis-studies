@@ -23,7 +23,7 @@ desc "build stack exchange redis"
 build :restore_redis do |msb, args| 
   msb.prop :configuration, :Debug
   msb.target = [:Rebuild]
-  msb.sln = File.join(dir, "StackExchange.Redis", "StackExchange.Redis","StackExchange.Redis.csproj")
+  msb.sln = File.join(dir, "StackExchange.Redis", "StackExchange.Redis.sln")
 end
 
 task :test=> [:build, :test_only]
