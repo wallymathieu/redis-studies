@@ -16,8 +16,11 @@ namespace SomeBasicFileStoreApp.Core.Commands
         public override void Handle(IRepository repository)
         {
             var command = this;
-            repository.Save(new Customer(command.Id, command.Firstname, command.Lastname, command.Version));
+            Customer c;
+            if (!repository.TryGetCustomer(command.Id, out c))
+            {
+                repository.Save(new Customer(command.Id, command.Firstname, command.Lastname, command.Version));
+            }
         }
-
     }
 }

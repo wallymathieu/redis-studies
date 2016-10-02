@@ -59,9 +59,8 @@ namespace SomeBasicFileStoreApp.Core.Commands
 
             if (commands.Any())
             {
-                var ids = _appendBatch.Batch(commands);
-                _repo.Handled(ids);
-                _pubSub.Publish(ids);
+                _repo.Handled(commands.Select(c=>c.UniqueId));
+                _pubSub.Publish(_appendBatch.Batch(commands));
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using With;
 using With.ReadonlyEnumerable;
 
@@ -20,10 +21,9 @@ namespace SomeBasicFileStoreApp.Core.Commands
             var command = this;
             var order = repository.GetOrder(command.OrderId);
             var product = repository.GetProduct(command.ProductId);
-            repository.Save(order.With(o =>
-                o.Products.Add(product)));
+            if (!order.Products.Any(p=>p.Id.Equals(command.ProductId)))
+                repository.Save(order.With(o =>
+                    o.Products.Add(product)));
         }
-
-
     }
 }

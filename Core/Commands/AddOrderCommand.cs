@@ -16,7 +16,11 @@ namespace SomeBasicFileStoreApp.Core.Commands
         public override void Handle(IRepository repository)
         {
             var command = this;
-            repository.Save(new Order(command.Id, command.Customer, command.OrderDate, new Product[0], command.Version));
+            Order o;
+            if (!repository.TryGetOrder(command.Id, out o))
+            {
+                repository.Save(new Order(command.Id, command.Customer, command.OrderDate, new Product[0], command.Version));
+            }
         }
     }
 }

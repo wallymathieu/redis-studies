@@ -55,5 +55,20 @@ namespace SomeBasicFileStoreApp.Core
 		{
 			return _customers[_orders[v].Customer];
 		}
-	}
+
+        public bool TryGetCustomer(int v, out Customer customer)
+        {
+            return _customers.TryGetValue(v, out customer);
+        }
+
+        public bool TryGetOrder(int v, out Order order)
+        {
+            return _orders.TryGetValue(v, out order);
+        }
+
+        public bool TryGetProduct(int v, out Product product)
+        {
+            return _products.TryGetValue(v, out product);
+        }
+    }
 }

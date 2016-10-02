@@ -57,12 +57,9 @@ namespace SomeBasicFileStoreApp.Tests
         {
             foreach (var command in commands)
             {
-                if (_commandRepository.IsUnHandled(command.UniqueId))
+                foreach (var handler in handlers)
                 {
-                    foreach (var handler in handlers)
-                    {
-                        handler.Invoke(command);
-                    }
+                    handler.Invoke(command);
                 }
             }
         }
