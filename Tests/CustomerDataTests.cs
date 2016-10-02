@@ -6,7 +6,7 @@ namespace SomeBasicFileStoreApp.Tests
     [TestFixture]
     public class CustomerDataTests
     {
-        private IRepository _repository;
+        private Repository _repository;
         private ObjectContainer _container;
         [Test]
         public void CanGetCustomerById()

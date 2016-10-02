@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using SomeBasicFileStoreApp.Core.Infrastructure;
+using System.Threading.Tasks;
 
 namespace SomeBasicFileStoreApp.Core.Commands
 {
@@ -40,14 +41,14 @@ namespace SomeBasicFileStoreApp.Core.Commands
             while (!stop)
             {
                 signal.WaitOne();
-                AppendBatch();
+                AppendBatch().Wait();// we want the append to run on this thread
             }
             // While the batch has been running, more commands might have been added
             // and stop might have been called
-            AppendBatch();
+            AppendBatch().Wait();
         }
 
-        private void AppendBatch()
+        private async Task AppendBatch()
         {
             var commands = new List<Command>();
 
@@ -60,7 +61,7 @@ namespace SomeBasicFileStoreApp.Core.Commands
             if (commands.Any())
             {
                 _repo.Handled(commands.Select(c=>c.UniqueId));
-                _pubSub.Publish(_appendBatch.Batch(commands));
+                _pubSub.Publish(await _appendBatch.Batch(commands));
             }
         }
 

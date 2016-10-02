@@ -13,7 +13,7 @@ namespace SomeBasicFileStoreApp.Tests
         private readonly IList<Command[]> batches = new List<Command[]>();
         private readonly IDictionary<Guid, Command> _commands = new Dictionary<Guid, Command>();
 
-        public Guid[] Batch(IEnumerable<Command> commands)
+        public async Task<Guid[]> Batch(IEnumerable<Command> commands)
         {
             var cs = commands.ToArray();
             batches.Add(cs);
@@ -24,7 +24,7 @@ namespace SomeBasicFileStoreApp.Tests
                 _commands.Add(g, command);
                 ids.Add(g);
             }
-            Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
+            await Task.Delay(TimeSpan.FromMilliseconds(100));
             return ids.ToArray();
         }
 
@@ -33,14 +33,14 @@ namespace SomeBasicFileStoreApp.Tests
             return batches.ToArray();
         }
 
-        public IEnumerable<Command> Read(Guid[] keys)
+        public Task<IEnumerable<Command>> Read(Guid[] keys)
         {
-            return keys.Select(key=>_commands[key]);
+            return Task.FromResult( keys.Select(key=>_commands[key]));
         }
 
-        public IEnumerable<Command> ReadAll()
+        public Task<IEnumerable<Command>> ReadAll()
         {
-            return _commands.Values;
+            return Task.FromResult((IEnumerable<Command>) _commands.Values);
         }
     }
 }

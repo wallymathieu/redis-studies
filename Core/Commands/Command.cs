@@ -20,7 +20,7 @@ namespace SomeBasicFileStoreApp.Core.Commands
         public long SequenceNumber { get; set; }
         public Guid UniqueId { get; set; }
 
-        public abstract void Handle(IRepository repository);
+        public abstract void Handle(Repository repository);
         public static string ToString(IEnumerable<Guid> uniqueIds)
         {
             return string.Join(",", uniqueIds.Select(id => id.ToString("N")));

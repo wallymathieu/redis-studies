@@ -13,7 +13,7 @@ namespace SomeBasicFileStoreApp.Core.Commands
         public AddOrderCommand(Guid id) : base(id)
         {
         }
-        public override void Handle(IRepository repository)
+        public override void Handle(Repository repository)
         {
             var command = this;
             Order o;

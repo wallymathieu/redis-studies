@@ -9,7 +9,7 @@ namespace SomeBasicFileStoreApp.Tests
     {
         private CommandHandler[] handlers;
         private PersistCommandsHandler _persistToFile;
-        private readonly IRepository _repository = new Repository();
+        private readonly Repository _repository = new Repository();
         private readonly FakeAppendToFile _fakeAppendToFile;
         private readonly CommandRepository _commandRepository;
         private readonly FakePubSub _pubSub;
@@ -37,7 +37,7 @@ namespace SomeBasicFileStoreApp.Tests
             _persistToFile.Start();
         }
 
-        public IRepository GetRepository()
+        public Repository GetRepository()
         {
             return _repository;
         }

@@ -3,6 +3,7 @@ using System.Linq;
 using StackExchange.Redis;
 using SomeBasicFileStoreApp.Core.Infrastructure.Redis;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace SomeBasicFileStoreApp.Tests.Redis
 {
@@ -33,8 +34,8 @@ namespace SomeBasicFileStoreApp.Tests.Redis
         {
             var commands = new GetCommands().Get().ToArray();
             var _persist = new AppendToRedis(redis.GetDatabase());
-            _persist.Batch(commands);
-            var read = _persist.ReadAll();
+            _persist.Batch(commands).Wait();
+            var read = _persist.ReadAll().Result;
             Assert.That(read.Count(), Is.EqualTo(commands.Length));
         }
     }

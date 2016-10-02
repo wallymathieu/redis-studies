@@ -15,7 +15,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
         {
             this.db = db;
         }
-        public Guid[] Batch(IEnumerable<Command> commands)
+        public async Task<Guid[]> Batch(IEnumerable<Command> commands)
         {
             var batch = db.CreateBatch();
             var ids = new List<Task<Guid>>();
@@ -26,8 +26,8 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             var redisValueIds = commands.Select(c => (RedisValue)c.UniqueId.ToString()).ToArray();
             var res = batch.SetAddAsync("Commands", redisValueIds);
             batch.Execute();
-            res.Wait();
-            Task.WhenAll(ids);
+            await Task.WhenAll(ids);
+            await res;
             return commands.Select(c => c.UniqueId).ToArray();
         }
 
@@ -52,19 +52,19 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             return id;
         }
 
-        public IEnumerable<Command> ReadAll()
+        public async Task<IEnumerable<Command>> ReadAll()
         {
-            return ReadAll(db).Result;
+            return await ReadAll(db);
         }
 
-        public IEnumerable<Command> Read(Guid[] keys) 
+        public async Task<IEnumerable<Command>> Read(Guid[] keys) 
         {
             var batch = db.CreateBatch();
             var res = Task.WhenAll(keys.Select(key =>
                                  Read(batch, key)
                                               ).ToArray());
             batch.Execute();
-            return res.Result;
+            return await res;
         }
 
         private static async Task<Command> Read(IBatch db, Guid key)

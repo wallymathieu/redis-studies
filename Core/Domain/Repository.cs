@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 
 namespace SomeBasicFileStoreApp.Core
 {
-	public class Repository : IRepository
+	public class Repository 
 	{
         private IDictionary<long, Customer> _customers = new ConcurrentDictionary<long, Customer>();
         private IDictionary<long, Product> _products = new ConcurrentDictionary<long, Product>();

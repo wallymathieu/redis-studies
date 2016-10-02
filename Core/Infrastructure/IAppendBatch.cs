@@ -7,6 +7,6 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure
 {
     public interface IAppendBatch
     {
-        Guid[] Batch(IEnumerable<Command> commands);
+        Task<Guid[]> Batch(IEnumerable<Command> commands);
     }
 }

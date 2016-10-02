@@ -14,7 +14,7 @@ namespace SomeBasicFileStoreApp.Core.Commands
         public AddProductCommand(Guid id) : base(id)
         {
         }
-        public override void Handle(IRepository repository)
+        public override void Handle(Repository repository)
         {
             var command = this;
             Product p;

@@ -16,7 +16,7 @@ namespace SomeBasicFileStoreApp.Core.Commands
         {
         }
 
-        public override void Handle(IRepository repository)
+        public override void Handle(Repository repository)
         {
             var command = this;
             var order = repository.GetOrder(command.OrderId);

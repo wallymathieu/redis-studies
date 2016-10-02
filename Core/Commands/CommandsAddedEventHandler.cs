@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SomeBasicFileStoreApp.Core
 {
@@ -7,20 +8,20 @@ namespace SomeBasicFileStoreApp.Core
     {
         readonly CommandRepository _commandRepository;
         readonly IReadBatch _readBatch;
-        readonly IRepository _repository;
+        readonly Repository _repository;
 
         public CommandsAddedEventHandler(CommandRepository commandRepository,
                                          IReadBatch readBatch,
-                                         IRepository repository)
+                                         Repository repository)
         {
             _commandRepository = commandRepository;
             _readBatch = readBatch;
             _repository = repository;
         }
 
-        public void OnReceive(Guid[] keys)
+        public async Task OnReceive(Guid[] keys)
         {
-            foreach (var command in _readBatch.Read(_commandRepository.UnHandled(keys).ToArray()))
+            foreach (var command in await _readBatch.Read(_commandRepository.UnHandled(keys).ToArray()))
             {
                 command.Handle(_repository);
             }
