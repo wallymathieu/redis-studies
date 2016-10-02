@@ -13,7 +13,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
         {
             return hash.Single(h => h.Name == name);
         }
-        public static Int32 GetInt(this HashEntry[] hash, string name)
+        public static int GetInt(this HashEntry[] hash, string name)
         {
             var v = WithName(hash, name);
             int value;
@@ -23,10 +23,10 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             }
             throw new Exception("Failed to parse "+v.Value);
         }
-        public static Int64 GetLong(this HashEntry[] hash, string name)
+        public static long GetLong(this HashEntry[] hash, string name)
         {
             var v = WithName(hash, name);
-            return Int64.Parse(v.Value.ToString());
+            return long.Parse(v.Value.ToString());
         }
 
         public static float GetFloat(this HashEntry[] hash, string name)
@@ -41,7 +41,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
 
         public static Guid HashCreate(this Command command, IBatch batch)
         {
-            var id = Guid.NewGuid();
+            var id = command.UniqueId;
             batch.HashSetAsync(id.ToString(), new []
                 {
                     new HashEntry("Type", getName[command.GetType()]),
@@ -62,7 +62,6 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
         {
             return db.HashGetAll(key.ToString());
         }
-
 
         public static IDictionary<string,Type> getCommand;
         public static IDictionary<Type, string> getName;

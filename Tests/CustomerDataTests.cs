@@ -1,10 +1,6 @@
-﻿using System.IO;
-using System.Xml.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SomeBasicFileStoreApp.Core;
 using System.Linq;
-using System;
-using System.Collections.Generic;
 namespace SomeBasicFileStoreApp.Tests
 {
     [TestFixture]

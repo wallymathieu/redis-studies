@@ -9,16 +9,20 @@ namespace SomeBasicFileStoreApp.Core.Commands
 {
     public class PersistCommandsHandler
     {
-        private Thread thread;
-        private bool stop = false;
-        private readonly ConcurrentQueue<Command> Commands = new ConcurrentQueue<Command>();
-        private readonly IAppendBatch _appendBatch;
-        private EventWaitHandle signal;
+        Thread thread;
+        bool stop = false;
+        readonly ConcurrentQueue<Command> Commands = new ConcurrentQueue<Command>();
+        readonly IAppendBatch _appendBatch;
+        EventWaitHandle signal;
+        readonly CommandRepository _repo;
+        readonly IPubSub _pubSub;
 
-        public PersistCommandsHandler(IAppendBatch appendBatch)
+        public PersistCommandsHandler(IAppendBatch appendBatch, CommandRepository repo, IPubSub pubSub)
         {
             _appendBatch = appendBatch;
+            _repo = repo;
             signal = new EventWaitHandle(false, EventResetMode.AutoReset);
+            _pubSub = pubSub;
         }
 
         public void Start()
@@ -44,7 +48,7 @@ namespace SomeBasicFileStoreApp.Core.Commands
         }
 
         private void AppendBatch()
-        { 
+        {
             var commands = new List<Command>();
 
             Command command;
@@ -55,7 +59,9 @@ namespace SomeBasicFileStoreApp.Core.Commands
 
             if (commands.Any())
             {
-                _appendBatch.Batch(commands);
+                var ids = _appendBatch.Batch(commands);
+                _repo.Handled(ids);
+                _pubSub.Publish(ids);
             }
         }
 

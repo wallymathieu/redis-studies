@@ -7,11 +7,16 @@ namespace SomeBasicFileStoreApp.Core.Commands
         public virtual int Version { get;  set; }
         public virtual int Customer { get;  set; }
         public virtual DateTime OrderDate { get;  set; }
-       
-        public override void Handle(IRepository _repository)
+        public AddOrderCommand()
+        {
+        }
+        public AddOrderCommand(Guid id) : base(id)
+        {
+        }
+        public override void Handle(IRepository repository)
         {
             var command = this;
-            _repository.Save(new Order(command.Id, command.Customer, command.OrderDate, new Product[0], command.Version));
+            repository.Save(new Order(command.Id, command.Customer, command.OrderDate, new Product[0], command.Version));
         }
     }
 }

@@ -7,23 +7,27 @@ using System;
 
 namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
 {
-    public class AppendToRedis
+    public class AppendToRedis : IAppendBatch, IReadBatch
     {
         private readonly IDatabase db;
         public AppendToRedis(IDatabase db)
         {
             this.db = db;
         }
-        public void Batch(IEnumerable<Command> commands)
+        public Guid[] Batch(IEnumerable<Command> commands)
         {
-            var batch = this.db.CreateBatch();
+            var batch = db.CreateBatch();
             var ids = new List<Guid>();
             foreach (var command in commands)
             {
                 ids.Add(command.HashCreate(batch));
             }
-            batch.SetAddAsync("Commands", ids.Select(id => (RedisValue)id.ToString()).ToArray());
+            var redisValueIds = ids.Select(id => (RedisValue)id.ToString()).ToArray();
+            var res = batch.SetAddAsync("Commands", redisValueIds);
             batch.Execute();
+
+            res.Wait();
+            return ids.ToArray();
         }
 
         public IEnumerable<Command> ReadAll()
@@ -31,9 +35,14 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             return ReadAll(db);
         }
 
-        public static Command Read(IDatabase db, Guid key)
+        public IEnumerable<Command> Read(Guid[] keys) 
         {
-            var entries = db.HashGetAll(key);
+            return keys.Select(key=> Read(db, key));
+        }
+
+        private static Command Read(IDatabase db, Guid key)
+        {
+            var entries = db.HashGetAll(key.ToString());
             var type = entries.GetString("Type");
             var command = RedisExtensions.getCommand[type];
             var instance = (Command)Activator.CreateInstance(command);
@@ -48,7 +57,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             return instance;
         }
 
-        public static IEnumerable<Command> ReadAll(IDatabase db)
+        private static IEnumerable<Command> ReadAll(IDatabase db)
         {
             var commands = db.SetMembers("Commands");
             foreach (var item in commands)
