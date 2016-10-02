@@ -9,18 +9,17 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
     
     public class AddProductCommandMap
     {
-        public static async Task<Guid> Persist(AddProductCommand c,IBatch batch, Guid id)
+        public static HashEntry[] ToHash(AddProductCommand c)
         {
-            await batch.HashSetAsync(id.ToString(), new []
+            return new[]
                 {
                     new HashEntry("Id", c.Id),
                     new HashEntry("Version", c.Version),
                     new HashEntry("Cost", c.Cost.ToString()),
                     new HashEntry("Name", c.Name),
-                });
-            return id;
+            };
         }
-        public static void Restore(AddProductCommand c, HashEntry[] hash)
+        public static void FromHash(AddProductCommand c, HashEntry[] hash)
         {
             c.Id = hash.GetInt("Id");
             c.Version = hash.GetInt("Version");

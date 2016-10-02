@@ -21,7 +21,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             var ids = new List<Task<Guid>>();
             foreach (var command in commands)
             {
-                ids.Add(command.HashCreate(batch));
+                ids.Add(HashCreate(command, batch));
             }
             var redisValueIds = commands.Select(c => (RedisValue)c.UniqueId.ToString()).ToArray();
             var res = batch.SetAddAsync("Commands", redisValueIds);
@@ -29,6 +29,27 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             res.Wait();
             Task.WhenAll(ids);
             return commands.Select(c => c.UniqueId).ToArray();
+        }
+
+        private static async Task<Guid> HashCreate(Command command, IBatch batch)
+        {
+            var id = command.UniqueId;
+            var addBasic = batch.HashSetAsync(id.ToString(), new[]
+                {
+                    new HashEntry("Type", RedisExtensions.getName[command.GetType()]),
+                    new HashEntry("SequenceNumber", command.SequenceNumber)
+                });
+
+            var hash = Switch.Match<Command, HashEntry[]>(command)
+                .Case((AddCustomerCommand c) => AddCustomerCommandMap.ToHash(c))
+                .Case((AddOrderCommand c) => AddOrderCommandMap.ToHash(c))
+                .Case((AddProductCommand c) => AddProductCommandMap.ToHash(c))
+                .Case((AddProductToOrder c) => AddProductToOrderMap.ToHash(c))
+                .Value()
+                ;
+            var addSpecific = batch.HashSetAsync(id.ToString(), hash);
+            await Task.WhenAll(new Task[] { addBasic, addSpecific });
+            return id;
         }
 
         public IEnumerable<Command> ReadAll()
@@ -58,10 +79,10 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             instance.SequenceNumber = e.GetInt("SequenceNumber");
 
             Switch.On(instance)
-                .Case((AddCustomerCommand c) => AddCustomerCommandMap.Restore(c, h))
-                .Case((AddOrderCommand c) => AddOrderCommandMap.Restore(c, h))
-                .Case((AddProductCommand c) => AddProductCommandMap.Restore(c, h))
-                .Case((AddProductToOrder c) => AddProductToOrderMap.Restore(c, h))
+                .Case((AddCustomerCommand c) => AddCustomerCommandMap.FromHash(c, h))
+                .Case((AddOrderCommand c) => AddOrderCommandMap.FromHash(c, h))
+                .Case((AddProductCommand c) => AddProductCommandMap.FromHash(c, h))
+                .Case((AddProductToOrder c) => AddProductToOrderMap.FromHash(c, h))
                 .ElseFail()
                 ;
             return instance;

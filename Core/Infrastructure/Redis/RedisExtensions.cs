@@ -39,27 +39,6 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             return WithName(hash, name).Value.ToString();
         }
 
-
-        public static async Task<Guid> HashCreate(this Command command, IBatch batch)
-        {
-            var id = command.UniqueId;
-            var first= batch.HashSetAsync(id.ToString(), new []
-                {
-                    new HashEntry("Type", getName[command.GetType()]),
-                    new HashEntry("SequenceNumber", command.SequenceNumber)
-                });
-            
-            var second= Switch.Match<Command,Task>(command)
-                .Case((AddCustomerCommand c) => AddCustomerCommandMap.Persist(c, batch, id))
-                .Case((AddOrderCommand c)=> AddOrderCommandMap.Persist(c, batch, id))
-                .Case((AddProductCommand c)=> AddProductCommandMap.Persist(c, batch, id))
-                .Case((AddProductToOrder c)=> AddProductToOrderMap.Persist(c, batch, id))
-                .Value()
-                ;
-            await Task.WhenAll(new Task[] { first, second});
-            return id;
-        }
-
         public static IDictionary<string,Type> getCommand;
         public static IDictionary<Type, string> getName;
         static RedisExtensions(){
