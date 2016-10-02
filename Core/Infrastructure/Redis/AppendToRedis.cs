@@ -45,7 +45,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             var entries = db.HashGetAll(key.ToString());
             var type = entries.GetString("Type");
             var command = RedisExtensions.getCommand[type];
-            var instance = (Command)Activator.CreateInstance(command);
+            var instance = (Command)Activator.CreateInstance(command, new object[] { key });
             instance.SequenceNumber = entries.GetInt("SequenceNumber");
             Switch.On(instance)
                 .Case((AddCustomerCommand c) => AddCustomerCommandMap.Restore(c, db, key))
@@ -60,6 +60,7 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
         private static IEnumerable<Command> ReadAll(IDatabase db)
         {
             var commands = db.SetMembers("Commands");
+
             foreach (var item in commands)
             {
                 yield return Read(db, Guid.Parse(item));
