@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using SomeBasicFileStoreApp.Core.Commands;
 using StackExchange.Redis;
 using With;
@@ -8,22 +9,19 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
     
     public class AddProductToOrderMap
     {
-        public static Guid Persist(AddProductToOrder c, IBatch batch, Guid id)
+        public static async Task<Guid> Persist(AddProductToOrder c, IBatch batch, Guid id)
         {
-            batch.HashSetAsync(id.ToString(), new []
+            await batch.HashSetAsync(id.ToString(), new []
                 {
                     new HashEntry("OrderId", c.OrderId),
                     new HashEntry("ProductId", c.ProductId),
                 });
             return id;
         }
-        public static void Restore(AddProductToOrder c, IDatabase db, Guid key)
+        public static void Restore(AddProductToOrder c, HashEntry[] hash)
         {
-            db.HashGetAll(key).Tap(hash =>
-                {
-                    c.OrderId = hash.GetInt("OrderId");
-                    c.ProductId = hash.GetInt("ProductId");
-                });
+            c.OrderId = hash.GetInt("OrderId");
+            c.ProductId = hash.GetInt("ProductId");
         }
     }
 }

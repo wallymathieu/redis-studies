@@ -4,6 +4,7 @@ using System.Linq;
 using SomeBasicFileStoreApp.Core.Commands;
 using System.Collections.Generic;
 using With;
+using System.Threading.Tasks;
 
 namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
 {
@@ -39,28 +40,24 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
         }
 
 
-        public static Guid HashCreate(this Command command, IBatch batch)
+        public static async Task<Guid> HashCreate(this Command command, IBatch batch)
         {
             var id = command.UniqueId;
-            batch.HashSetAsync(id.ToString(), new []
+            var first= batch.HashSetAsync(id.ToString(), new []
                 {
                     new HashEntry("Type", getName[command.GetType()]),
                     new HashEntry("SequenceNumber", command.SequenceNumber)
                 });
             
-            Switch.On(command)
+            var second= Switch.Match<Command,Task>(command)
                 .Case((AddCustomerCommand c) => AddCustomerCommandMap.Persist(c, batch, id))
                 .Case((AddOrderCommand c)=> AddOrderCommandMap.Persist(c, batch, id))
                 .Case((AddProductCommand c)=> AddProductCommandMap.Persist(c, batch, id))
                 .Case((AddProductToOrder c)=> AddProductToOrderMap.Persist(c, batch, id))
-                .ElseFail()
+                .Value()
                 ;
-            
+            await Task.WhenAll(new Task[] { first, second});
             return id;
-        }
-        public static HashEntry[] HashGetAll(this IDatabase db, Guid key)
-        {
-            return db.HashGetAll(key.ToString());
         }
 
         public static IDictionary<string,Type> getCommand;
