@@ -33,7 +33,7 @@ namespace SomeBasicFileStoreApp.Tests
 
         public void Boot()
         {
-            _pubSub.Start(ids => _commandAddedHandler.OnReceive(ids));
+            _pubSub.Start(ids => _commandAddedHandler.OnReceive(ids).Wait());
             _persistToFile.Start();
         }
 
