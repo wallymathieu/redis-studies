@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    albacore (2.5.13)
+    albacore (2.6.2)
       map (~> 6.5)
       nokogiri (~> 1.5)
       rake (~> 10)
@@ -12,8 +12,10 @@ GEM
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
     nuget (2.8.50126.400)
-    nuget_helper (0.1.0)
+    nuget_helper (1.0.0)
+      nokogiri (~> 1.5)
       nuget (~> 2.8.50126.400)
+      semver2 (~> 3.4)
     pkg-config (1.1.7)
     rake (10.5.0)
     semver2 (3.4.2)
@@ -27,4 +29,4 @@ DEPENDENCIES
   nuget_helper
 
 BUNDLED WITH
-   1.10.6
+   1.13.2
