@@ -1,4 +1,6 @@
-﻿using With;
+﻿using System;
+using System.Linq;
+using With;
 using With.ReadonlyEnumerable;
 
 namespace SomeBasicFileStoreApp.Core.Commands
@@ -7,16 +9,21 @@ namespace SomeBasicFileStoreApp.Core.Commands
     {
         public int OrderId { get; set; }
         public int ProductId { get; set; }
-
-        public override void Handle(IRepository _repository)
+        public AddProductToOrder()
         {
-            var command = this;
-            var order = _repository.GetOrder(command.OrderId);
-            var product = _repository.GetProduct(command.ProductId);
-            _repository.Save(order.With(o =>
-                o.Products.Add(product)));
+        }
+        public AddProductToOrder(Guid id) : base(id)
+        {
         }
 
-
+        public override void Handle(Repository repository)
+        {
+            var command = this;
+            var order = repository.GetOrder(command.OrderId);
+            var product = repository.GetProduct(command.ProductId);
+            if (!order.Products.Any(p=>p.Id.Equals(command.ProductId)))
+                repository.Save(order.With(o =>
+                    o.Products.Add(product)));
+        }
     }
 }

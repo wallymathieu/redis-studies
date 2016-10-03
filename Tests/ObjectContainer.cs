@@ -9,25 +9,35 @@ namespace SomeBasicFileStoreApp.Tests
     {
         private CommandHandler[] handlers;
         private PersistCommandsHandler _persistToFile;
-        private readonly IRepository _repository = new Repository();
+        private readonly Repository _repository = new Repository();
         private readonly FakeAppendToFile _fakeAppendToFile;
+        private readonly CommandRepository _commandRepository;
+        private readonly FakePubSub _pubSub;
+        private readonly CommandsAddedEventHandler _commandAddedHandler;
+
 
         public ObjectContainer()
         {
             _fakeAppendToFile = new FakeAppendToFile();
-            _persistToFile = new PersistCommandsHandler(_fakeAppendToFile);
+            _commandRepository = new CommandRepository();
+            _pubSub = new FakePubSub();
+            _persistToFile = new PersistCommandsHandler(_fakeAppendToFile, _commandRepository, _pubSub);
+            _commandAddedHandler = new CommandsAddedEventHandler(_commandRepository,
+                                                                 _fakeAppendToFile,
+                                                                 _repository);
             handlers = new CommandHandler[] {
-                new RepositoryCommandHandler(_repository).Handle,
+                (command)=>command.Handle(_repository),
                 _persistToFile.Handle
             };
         }
 
         public void Boot()
         {
+            _pubSub.Start(ids => _commandAddedHandler.OnReceive(ids));
             _persistToFile.Start();
         }
 
-        public IRepository GetRepository()
+        public Repository GetRepository()
         {
             return _repository;
         }
@@ -35,6 +45,7 @@ namespace SomeBasicFileStoreApp.Tests
         public void Dispose()
         {
             _persistToFile.Stop();
+            _pubSub.Stop();
         }
 
         public IEnumerable<Command[]> BatchesPersisted()

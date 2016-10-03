@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using SomeBasicFileStoreApp.Core.Commands;
 using StackExchange.Redis;
 using With;
@@ -7,27 +8,23 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
 {
     public class AddCustomerCommandMap
     {
-        public static Guid Persist(AddCustomerCommand c, IBatch batch, Guid id)
+        public static HashEntry[] ToHash(AddCustomerCommand c)
         {
-            batch.HashSetAsync(id.ToString(), new []
+            return new []
                 {
                     new HashEntry("Id", c.Id),
                     new HashEntry("Version", c.Version),
                     new HashEntry("Firstname", c.Firstname),
                     new HashEntry("Lastname", c.Lastname),
-                });
-            return id;
+                };
         }
 
-        public static void Restore(AddCustomerCommand c, IDatabase db, Guid key)
+        public static void FromHash(AddCustomerCommand c, HashEntry[] hash)
         {
-            db.HashGetAll(key).Tap(hash =>
-                {
-                    c.Id = hash.GetInt("Id");
-                    c.Version = hash.GetInt("Version");
-                    c.Firstname = hash.GetString("Firstname");
-                    c.Lastname = hash.GetString("Lastname");
-                });
+            c.Id = hash.GetInt("Id");
+            c.Version = hash.GetInt("Version");
+            c.Firstname = hash.GetString("Firstname");
+            c.Lastname = hash.GetString("Lastname");
         }
     }
 }

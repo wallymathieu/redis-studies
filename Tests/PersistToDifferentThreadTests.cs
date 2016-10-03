@@ -33,11 +33,11 @@ namespace SomeBasicFileStoreApp.Tests
         public void Order()
         {
             _batches.SelectMany(b => b).Pairwise((last, current) =>
-                {
+            {
                     Assert.That(current.SequenceNumber, 
                         Is.GreaterThan(last.SequenceNumber));
                     return "Success";
-                });
+            }).ToArray();
             //Console.WriteLine(string.Join(", ",
             //    _batches.Select(b => "["+string.Join(", ", b.Select(a => a.SequenceNumber)) +"]" )));
         }

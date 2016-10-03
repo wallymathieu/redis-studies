@@ -1,29 +1,23 @@
-using System;
 using SomeBasicFileStoreApp.Core.Commands;
 using StackExchange.Redis;
-using With;
 
 namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
 {
-    
+
     public class AddProductToOrderMap
     {
-        public static Guid Persist(AddProductToOrder c, IBatch batch, Guid id)
+        public static HashEntry[] ToHash(AddProductToOrder c)
         {
-            batch.HashSetAsync(id.ToString(), new []
+            return new[]
                 {
                     new HashEntry("OrderId", c.OrderId),
                     new HashEntry("ProductId", c.ProductId),
-                });
-            return id;
+                };
         }
-        public static void Restore(AddProductToOrder c, IDatabase db, Guid key)
+        public static void FromHash(AddProductToOrder c, HashEntry[] hash)
         {
-            db.HashGetAll(key).Tap(hash =>
-                {
-                    c.OrderId = hash.GetInt("OrderId");
-                    c.ProductId = hash.GetInt("ProductId");
-                });
+            c.OrderId = hash.GetInt("OrderId");
+            c.ProductId = hash.GetInt("ProductId");
         }
     }
 }

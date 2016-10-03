@@ -1,18 +1,15 @@
 ﻿using NUnit.Framework;
-using System.IO;
-using System;
 using System.Linq;
-using With;
-using System.Collections.Generic;
 using StackExchange.Redis;
 using SomeBasicFileStoreApp.Core.Infrastructure.Redis;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace SomeBasicFileStoreApp.Tests.Redis
 {
-	[TestFixture]
-	public class PersistingEventsTests
-	{
+    [TestFixture]
+    public class PersistingEventsTests
+    {
         private ConnectionMultiplexer redis;
         private EndPoint endpoint;
         [SetUp]
@@ -22,23 +19,24 @@ namespace SomeBasicFileStoreApp.Tests.Redis
             endpoint = redis.GetEndPoints().First();
         }
 
-		[TearDown]
-		public void TearDown()
-		{
+        [TearDown]
+        public void TearDown()
+        {
             if (redis != null)
             {
                 redis.GetServer(endpoint).FlushDatabase();
                 redis.Close();
             }
-		}
+        }
 
-		[Test]
-		public void Read_items_persisted_in_single_batch()
-		{
-			var commands = new GetCommands().Get().ToArray();
+        [Test]
+        public void Read_items_persisted_in_single_batch()
+        {
+            var commands = new GetCommands().Get().ToArray();
             var _persist = new AppendToRedis(redis.GetDatabase());
-            _persist.Batch(commands);
-			Assert.That(_persist.ReadAll().Count(), Is.EqualTo(commands.Length));
-		}
-	}
+            _persist.Batch(commands).Wait();
+            var read = _persist.ReadAll().Result;
+            Assert.That(read.Count(), Is.EqualTo(commands.Length));
+        }
+    }
 }
