@@ -22,10 +22,13 @@ end
 desc "build stack exchange redis"
 task :restore_redis do |t|
   cd "StackExchange.Redis" do 
+    mkdir_p "bin"
     if Gem.win_platform? 
       sh "./netbuild.cmd"
+      cp "StackExchange.Redis\\bin\\Release\\StackExchange.Redis.dll", "bin"
     else
       sh "bash monobuild.bash"
+      cp "StackExchange.Redis/bin/mono/StackExchange.Redis.dll", "bin"
     end
   end
 end

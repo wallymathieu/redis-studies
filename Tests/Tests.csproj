@@ -44,7 +44,7 @@
       <HintPath>..\packages\With.3.0.0\lib\net45\With.dll</HintPath>
     </Reference>
     <Reference Include="StackExchange.Redis">
-      <HintPath>..\StackExchange.Redis\StackExchange.Redis_Net40\bin\Debug\StackExchange.Redis.dll</HintPath>
+      <HintPath>..\StackExchange.Redis\bin\StackExchange.Redis.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
