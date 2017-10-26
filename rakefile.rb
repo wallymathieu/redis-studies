@@ -20,10 +20,17 @@ nugets_restore :restore_nuget do |p|
 end
 
 desc "build stack exchange redis"
-build :restore_redis do |msb, args| 
-  msb.prop :configuration, :Debug
-  msb.target = [:Rebuild]
-  msb.sln = File.join(dir, "StackExchange.Redis", "StackExchange.Redis","StackExchange.Redis.csproj")
+task :restore_redis do |t|
+  cd "StackExchange.Redis" do 
+    mkdir_p "bin"
+    if Gem.win_platform? 
+      sh "./netbuild.cmd"
+      cp "StackExchange.Redis\\bin\\Release\\StackExchange.Redis.dll", "bin"
+    else
+      sh "bash monobuild.bash"
+      cp "StackExchange.Redis/bin/mono/StackExchange.Redis.dll", "bin"
+    end
+  end
 end
 
 task :test=> [:build, :test_only]

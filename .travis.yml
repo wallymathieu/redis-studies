@@ -5,7 +5,6 @@ services:
   
 solution: ./redis-studies.sln
 install:
-    - nuget restore ./redis-studies.sln
     - bundle install
     - rake restore
 
