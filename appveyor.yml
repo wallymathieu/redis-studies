@@ -1,19 +1,17 @@
+image: Visual Studio 2019
 version: 1.0.{build}
 configuration: Release
 before_build:
   - nuget install redis-64 -excludeversion -source http://www.nuget.org/api/v2/
   - Redis-64\tools\redis-server.exe --service-install
   - Redis-64\tools\redis-server.exe --service-start
-  - nuget restore redis-studies.sln
-  - git submodule update --init --recursive
-  - bundle install
-  - rake restore
+  - dotnet restore redis-studies.sln
 build:
   project: redis-studies.sln
   verbosity: minimal
   publish_nuget: false
 test_script:
-  - cmd: rake test_only
+  - cmd: dotnet test .\Tests
 nuget:
   account_feed: false
   project_feed: false

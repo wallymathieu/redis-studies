@@ -1,13 +1,16 @@
-sudo: false
-language: csharp 
+language: csharp
+
+dotnet: 2.2.402
+mono:
+  - latest
+os:
+  - linux
 services:
   - redis-server 
   
 solution: ./redis-studies.sln
 install:
-    - nuget restore ./redis-studies.sln
-    - bundle install
-    - rake restore
+    - dotnet restore ./redis-studies.sln
 
 script: 
-  - rake test
+  - dotnet test ./Tests
