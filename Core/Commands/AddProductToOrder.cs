@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using With;
-using With.ReadonlyEnumerable;
 
 namespace SomeBasicFileStoreApp.Core.Commands
 {
@@ -15,15 +15,18 @@ namespace SomeBasicFileStoreApp.Core.Commands
         public AddProductToOrder(Guid id) : base(id)
         {
         }
-
+        private static readonly IPreparedCopy<Order, IEnumerable<Product>> ProductsCopy =
+            Prepare.Copy<Order, IEnumerable<Product>>((o, v) => o.Products == v);
         public override void Handle(Repository repository)
         {
             var command = this;
             var order = repository.GetOrder(command.OrderId);
             var product = repository.GetProduct(command.ProductId);
-            if (!order.Products.Any(p=>p.Id.Equals(command.ProductId)))
-                repository.Save(order.With(o =>
-                    o.Products.Add(product)));
+            if (!order.Products.Any(p => p.Id.Equals(command.ProductId)))
+            {
+                repository.Save(ProductsCopy.Copy(order, new List<Product>(order.Products) { product }));
+            }
+
         }
     }
 }

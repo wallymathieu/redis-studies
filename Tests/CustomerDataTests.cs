@@ -27,9 +27,9 @@ namespace SomeBasicFileStoreApp.Tests
         [Test]
         public void OrderHasACustomer()
         {
-            Assert.IsNotNullOrEmpty(_repository.GetTheCustomerOrder(1).Firstname);
+            Assert.False(string.IsNullOrEmpty( _repository.GetTheCustomerOrder(1).Firstname));
         }
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestFixtureSetup()
         {
             _container = new ObjectContainer();
@@ -38,7 +38,7 @@ namespace SomeBasicFileStoreApp.Tests
             var commands = new GetCommands().Get();
             _container.HandleAll(commands);
         }
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
             _container.Dispose();
