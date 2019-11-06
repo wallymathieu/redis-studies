@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using System.Linq;
 using SomeBasicFileStoreApp.Core.Commands;
-using With.Linq;
+using With.Collections;
 
 namespace SomeBasicFileStoreApp.Tests
 {
@@ -11,7 +11,7 @@ namespace SomeBasicFileStoreApp.Tests
     {
         private Command[][] _batches;
         private Command[] _commandsSent;
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
             var container = new ObjectContainer();

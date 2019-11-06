@@ -39,14 +39,22 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
                     new HashEntry("Type", RedisExtensions.getName[command.GetType()]),
                     new HashEntry("SequenceNumber", command.SequenceNumber)
                 });
-
-            var hash = Switch.Match<Command, HashEntry[]>(command)
-                .Case((AddCustomerCommand c) => AddCustomerCommandMap.ToHash(c))
-                .Case((AddOrderCommand c) => AddOrderCommandMap.ToHash(c))
-                .Case((AddProductCommand c) => AddProductCommandMap.ToHash(c))
-                .Case((AddProductToOrder c) => AddProductToOrderMap.ToHash(c))
-                .Value()
-                ;
+            HashEntry[] hash;
+            switch (command){
+                case AddCustomerCommand c:
+                    hash = AddCustomerCommandMap.ToHash(c);
+                    break;
+                case AddOrderCommand c:
+                    hash = AddOrderCommandMap.ToHash(c);
+                    break;
+                case AddProductCommand c:
+                    hash = AddProductCommandMap.ToHash(c);
+                    break;
+                case AddProductToOrder c:
+                    hash = AddProductToOrderMap.ToHash(c);
+                    break;
+                default: throw new Exception($"Unexpected type {command.GetType().Name}");
+            }
             var addSpecific = batch.HashSetAsync(id.ToString(), hash);
             await Task.WhenAll(new Task[] { addBasic, addSpecific });
             return id;
@@ -77,14 +85,21 @@ namespace SomeBasicFileStoreApp.Core.Infrastructure.Redis
             var command = RedisExtensions.getCommand[type];
             var instance = (Command)Activator.CreateInstance(command, new object[] { key });
             instance.SequenceNumber = e.GetInt("SequenceNumber");
-
-            Switch.On(instance)
-                .Case((AddCustomerCommand c) => AddCustomerCommandMap.FromHash(c, h))
-                .Case((AddOrderCommand c) => AddOrderCommandMap.FromHash(c, h))
-                .Case((AddProductCommand c) => AddProductCommandMap.FromHash(c, h))
-                .Case((AddProductToOrder c) => AddProductToOrderMap.FromHash(c, h))
-                .ElseFail()
-                ;
+            switch (instance){
+                case AddCustomerCommand c:
+                    AddCustomerCommandMap.FromHash(c, h);
+                    break;
+                case AddOrderCommand c:
+                     AddOrderCommandMap.FromHash(c, h);
+                    break;
+                case AddProductCommand c:
+                    AddProductCommandMap.FromHash(c, h);
+                    break;
+                case AddProductToOrder c:
+                    AddProductToOrderMap.FromHash(c, h);
+                    break;
+                default: throw new Exception($"Unexpected type {command.GetType().Name}");
+            }
             return instance;
         }
 
