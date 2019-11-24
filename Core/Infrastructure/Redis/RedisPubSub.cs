@@ -14,7 +14,7 @@ namespace SomeBasicFileStoreApp.Core
         }
         public void Publish(Guid[] ids)
         {
-            db.Publish("CommandsAdded", Command.ToString(ids), CommandFlags.HighPriority);
+            db.Publish("CommandsAdded", Command.ToString(ids));
         }
         public void Start(Action<Guid[]> onEvent) 
         {
