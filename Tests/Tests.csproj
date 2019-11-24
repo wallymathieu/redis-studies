@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProjectGuid>{5F8CAE69-D970-47F8-87B9-71D678BF264C}</ProjectGuid>
     <RootNamespace>SomeBasicRedisApp.Tests</RootNamespace>
     <TargetFramework>netcoreapp2.2</TargetFramework>
 

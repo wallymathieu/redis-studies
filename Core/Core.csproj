@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProjectGuid>{FE5250C5-0FC2-443A-91B8-F1758176937C}</ProjectGuid>
     <RootNamespace>SomeBasicRedisApp.Core</RootNamespace>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyTitle>Core</AssemblyTitle>
